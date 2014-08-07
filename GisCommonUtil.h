@@ -13,7 +13,7 @@ using namespace std;
 namespace GisCommonUtil{
 
 	
-	class JWD
+	class LonLat
 	{
 		public:
 			double m_LoDeg, m_LoMin, m_LoSec;  // longtitude 经度
@@ -24,7 +24,7 @@ namespace GisCommonUtil{
 			double Ed;//距离赤道切面的高度
 		public:
 		// 构造函数, 经度: loDeg 度, loMin 分, loSec 秒;  纬度: laDeg 度, laMin 分, laSec秒
-			JWD(double loDeg, double loMin, double loSec, double laDeg, double laMin, double laSec)
+			LonLat(double loDeg, double loMin, double loSec, double laDeg, double laMin, double laSec)
 			{
 				m_LoDeg=loDeg; m_LoMin=loMin; m_LoSec=loSec; m_LaDeg=laDeg; m_LaMin=laMin; m_LaSec=laSec;
 				m_Longitude = m_LoDeg + m_LoMin / 60 + m_LoSec / 3600;
@@ -36,7 +36,7 @@ namespace GisCommonUtil{
 			}
 
 			//！
-			JWD(double longitude, double latitude)
+			LonLat(double longitude, double latitude)
 			{
 				m_LoDeg = int(longitude);
 				m_LoMin = int((longitude - m_LoDeg)*60);
@@ -56,11 +56,11 @@ namespace GisCommonUtil{
 	};
 
 
-	class CJWDHelper
+	class CLonLatHelper
 	{
 		public:
-			CJWDHelper() {};
-			~CJWDHelper() {};
+			CLonLatHelper() {};
+			~CLonLatHelper() {};
 
 
 		//! 计算点A 和 点B的经纬度，求他们的距离和点B相对于点A的方位
@@ -70,7 +70,7 @@ namespace GisCommonUtil{
 		  * /param angle B相对于A的方位, 不需要返回该值，则将其设为空
 		  * /return A点B点的距离
 		  */
-		static double distance(JWD A, JWD B, double *angle)
+		static double distance(LonLat A, LonLat B, double *angle)
 		{
 		  double dx = (B.m_RadLo - A.m_RadLo) * A.Ed;
 		  double dy = (B.m_RadLa - A.m_RadLa) * A.Ec;
@@ -113,8 +113,8 @@ namespace GisCommonUtil{
 	  double longitude2, double latitude2, 
 	  double *angle)
 	{
-	  JWD A(longitude1,latitude1);
-	  JWD B(longitude2,latitude2);
+	  LonLat A(longitude1,latitude1);
+	  LonLat B(longitude2,latitude2);
 
 
 	  return distance(A, B, angle);
@@ -128,7 +128,7 @@ namespace GisCommonUtil{
 	  * /param angle B点相对于A点的方位
 	  * /return B点的经纬度坐标
 	  */
-	static JWD GetJWDB(JWD A, double distance, double angle)
+	static LonLat GetLonLatB(LonLat A, double distance, double angle)
 	{ 
 	  double dx = distance*1000 * sin(angle * _PI_ /180.);
 	  double dy = distance*1000 * cos(angle * _PI_ /180.);
@@ -139,7 +139,7 @@ namespace GisCommonUtil{
 
 	  double BJD = (dx/A.Ed + A.m_RadLo) * 180./_PI_;
 	  double BWD = (dy/A.Ec + A.m_RadLa) * 180./_PI_;
-	  JWD B(BJD, BWD);
+	  LonLat B(BJD, BWD);
 	  return B; 
 	}
 
@@ -152,10 +152,10 @@ namespace GisCommonUtil{
 	  * /param angle B点相对于A点的方位
 	  * /return B点的经纬度坐标
 	  */
-	static JWD GetJWDB(double longitude, double latitude, double distance, double angle)
+	static LonLat GetLonLatB(double longitude, double latitude, double distance, double angle)
 	{ 
-		JWD A(longitude,latitude);
-		return GetJWDB(A, distance, angle);
+		LonLat A(longitude,latitude);
+		return GetLonLatB(A, distance, angle);
 	}
 
 	};
